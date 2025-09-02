@@ -20,6 +20,8 @@ Zig Example Programms for the book "The Rules of Programming" https://www.oreill
 
 ### Simple Algorithms
 
+[Shuffle](./01_simplicity/section_03_shuffle.zig)
+
 ### Don't Lose the plot
 
 ### One Rule to Rule Them All
