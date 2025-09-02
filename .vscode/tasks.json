@@ -2,21 +2,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Chapter 1",
+            "label": "Run tests in current file",
             "type": "shell",
             "command": "zig",
             "args": [
-                "build",
-                "run"
+                "test",
+                "${file}"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "problemMatcher": [],
-            "detail": "Runs the Zig program defined in main.zig",
+            "detail": "Runs the Zig tests defined in the current file",
             "options": {
-                "cwd": "${workspaceFolder}/src"
+                "cwd": "${workspaceFolder}"
             }
         }
     ]
