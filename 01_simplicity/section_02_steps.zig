@@ -174,8 +174,6 @@ pub const x5 = struct {
 };
 
 pub const x6 = struct {
-    const allocator = std.heap.page_allocator;
-
     fn countStepPatterns(step_count: usize) !i32 {
         // NOTE (chris) can't represent the pattern count in an int once we get past 36 steps...
         std.debug.assert(step_count <= 36);
@@ -195,8 +193,31 @@ pub const x6 = struct {
     }
 };
 
+pub const x7 = struct {
+    const MAX_STEPS = 30;
+    const STEP_PATTERN_COUNTS = calculateStepPatternCounts(u32, MAX_STEPS);
+
+    fn calculateStepPatternCounts(comptime T: type, comptime max_steps: usize) [max_steps + 1]T {
+        var step_pattern_counts: [max_steps + 1]T = [_]T{ 1, 1, 2 } ++ [_]T{0} ** (max_steps - 2);
+
+        for (3..(max_steps + 1)) |i| {
+            const newCount = step_pattern_counts[i - 3] +
+                step_pattern_counts[i - 2] +
+                step_pattern_counts[i - 1];
+            step_pattern_counts[i] = newCount;
+        }
+
+        return step_pattern_counts;
+    }
+
+    fn countStepPatterns(step_count: usize) u32 {
+        std.debug.assert(step_count <= MAX_STEPS);
+        return STEP_PATTERN_COUNTS[step_count];
+    }
+};
+
 test "Iterate over all structs and test countStepPatterns" {
-    const structs = [_]type{ x1, x2, x3, x4, x6 };
+    const structs = [_]type{ x1, x2, x3, x4, x6, x7 };
     inline for (structs) |Struct| {
         try std.testing.expectEqual(1, Struct.countStepPatterns(1));
         try std.testing.expectEqual(2, Struct.countStepPatterns(2));
@@ -208,6 +229,18 @@ test "Iterate over all structs and test countStepPatterns" {
         const start_time = std.time.nanoTimestamp();
         try std.testing.expectEqual(53798080, Struct.countStepPatterns(30));
         std.debug.print("Runtime of {}: {} ms\n", .{ Struct, @as(f64, @floatFromInt(std.time.nanoTimestamp() - start_time)) / 1_000_000_000.0 });
+    }
+}
+
+test "performance test" {
+    const structs = [_]type{ x2, x3, x4, x6, x7 };
+    inline for (structs) |Struct| {
+        const start_time = std.time.nanoTimestamp();
+        const REPETITIONS = 1_000;
+        for (0..REPETITIONS) |_| {
+            try std.testing.expectEqual(53798080, Struct.countStepPatterns(30));
+        }
+        std.debug.print("Runtime of {d}x {}: {} ms\n", .{ REPETITIONS, Struct, @as(f64, @floatFromInt(std.time.nanoTimestamp() - start_time)) / 1_000_000_000.0 });
     }
 }
 

@@ -146,6 +146,21 @@ pub const x3 = struct {
     }
 };
 
+const x4 = struct {
+    pub fn shuffle(allocator: std.mem.Allocator, cards: []const Card) ![]Card {
+        const shuffled = try allocator.dupe(Card, cards);
+        errdefer allocator.free(shuffled);
+
+        var prng = std.Random.DefaultPrng.init(@intCast(std.time.timestamp()));
+        const random = prng.random();
+        // const random = std.crypto.random;
+
+        random.shuffle(Card, shuffled);
+
+        return shuffled;
+    }
+};
+
 pub const Deck = struct {
     m_cards: std.ArrayList(Card),
 
@@ -173,7 +188,7 @@ pub fn getSum(cards: []const Card) i32 {
 }
 
 test "Iterate over all structs and test shuffle" {
-    const structs = [_]type{ x1, x2, x3 };
+    const structs = [_]type{ x1, x2, x3, x4 };
     inline for (structs) |Struct| {
         var allocator = std.testing.allocator;
 
