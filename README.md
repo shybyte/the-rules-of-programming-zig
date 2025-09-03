@@ -25,3 +25,13 @@ Zig Example Programms for the book "The Rules of Programming" https://www.oreill
 ### Don't Lose the plot
 
 ### One Rule to Rule Them All
+
+## Rule 2 - Bugs are contagious
+
+### Don't Count on Your Users
+
+### Automated Testing Can be Tricky
+
+### Stateless Code Is Easier to Test
+
+[Sum](./02_bugs/section_01_sum.zig)
